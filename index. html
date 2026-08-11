@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Gateway</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    /* Common Utility Classes */
+    .hidden {
+      display: none !important;
+    }
+
+    /* --- Page 1 Styles (Home) --- */
+    .nav-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background-color: #f8f9fa;
+      border-radius: 8px;
+      margin-bottom: 30px;
+    }
+
+    .nav-icon {
+      font-size: 18px;
+      color: #6c757d;
+      cursor: pointer;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: #000000;
+      margin-bottom: 25px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: 600;
+      color: #5c6b80;
+      margin-bottom: 25px;
+      text-align: center;
+    }
+
+    .tab-button {
+      background-color: #0052cc;
+      color: #ffffff;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      width: 100%;
+      border: none;
+      margin-bottom: 30px;
+    }
+
+    .payment-methods {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .payment-card-home {
+      width: 45%;
+      padding: 10px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #ffffff;
+      border: 1px solid #e2e8f0;
+      cursor: pointer;
+    }
+
+    .payment-card-home img {
+      max-width: 100%;
+      height: 40px;
+      object-fit: contain;
+    }
+
+    .bottom-section {
+      width: 100%;
+      max-width: 420px;
+      margin: 20px auto 0;
+      background-color: #ffffff;
+    }
+
+    .pay-btn {
+      width: 100%;
+      background-color: #dbeafe;
+      color: #0052cc;
+      border: none;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* --- Shared Payment Pages Styles (bKash & Nagad) --- */
+    .amount-box {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 15px;
+      text-align: center;
+      font-size: 26px;
+      font-weight: 700;
+      color: #5c6b80;
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    .back-btn {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 20px;
+      cursor: pointer;
+      color: #5c6b80;
+    }
+
+    .payment-card {
+      border-radius: 12px;
+      padding: 20px 18px;
+      color: #ffffff;
+    }
+
+    .card-title {
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .input-box {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      font-size: 15px;
+      color: #333333;
+      margin-bottom: 20px;
+    }
+
+    .input-box::placeholder {
+      color: #7d8b9b;
+    }
+
+    .instruction-list {
+      list-style-type: disc;
+      padding-left: 20px;
+      font-size: 13.5px;
+      line-height: 1.6;
+    }
+
+    .instruction-list li {
+      margin-bottom: 14px;
+    }
+
+    .highlight-yellow {
+      color: #ffcc00;
+      font-weight: bold;
+    }
+
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: #ffffff;
+      border: none;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+
+    .verify-btn {
+      width: 100%;
+      color: #ffffff;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      margin-top: 15px;
+      letter-spacing: 0.5px;
+    }
+
+    /* bKash Custom Colors */
+    .bkash-bg { background-color: #d10034; }
+    .bkash-copy-btn { background-color: #9e0027; }
+    .bkash-verify-btn { background-color: #a00028; }
+
+    /* Nagad Custom Colors */
+    .nagad-bg { background-color: #f7921e; }
+    .nagad-copy-btn { background-color: #d1750e; }
+    .nagad-verify-btn { background-color: #e07b07; }
+    .nagad-yellow { color: #fffb00; }
+  </style>
+</head>
+<body>
+
+  <!-- ================= PAGE 1: HOME ================= -->
+  <div id="home-page" class="container">
+    <div class="nav-bar">
+      <span class="nav-icon">&#8962;</span>
+      <div>
+        <span class="nav-icon" style="margin-right: 12px;">&#127760;</span>
+        <span class="nav-icon">&#10005;</span>
+      </div>
+    </div>
+
+    <div class="logo">TOP&#363;P</div>
+    <div class="title">Auto payment</div>
+
+    <button class="tab-button">Mobile Banking</button>
+
+    <div class="payment-methods">
+      <div class="payment-card-home" onclick="showPage('bkash-page')">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/7/71/BKash-Logo.png" alt="bKash">
+      </div>
+      <div class="payment-card-home" onclick="showPage('nagad-page')">
+        <img src="https://download.logo.wine/logo/Nagad/Nagad-Logo.wine.png" alt="Nagad">
+      </div>
+    </div>
+
+    <div class="bottom-section">
+      <button class="pay-btn" onclick="showPage('bkash-page')">Pay <span class="amount-display">200.00</span></button>
+    </div>
+  </div>
+
+
+  <!-- ================= PAGE 2: BKASH ================= -->
+  <div id="bkash-page" class="container hidden">
+    <div class="amount-box">
+      <span class="back-btn" onclick="showPage('home-page')">&#8592;</span>
+      ৳ <span class="amount-display-simple">200</span>
+    </div>
+
+    <div class="payment-card bkash-bg">
+      <div class="card-title">ট্রানজেকশন আইডি দিন</div>
+      
+      <input type="text" class="input-box" placeholder="ট্রানজেকশন আইডি দিন">
+
+      <ul class="instruction-list">
+        <li>*247# ডায়াল করে আপনার bKash মোবাইল মেনুতে যান অথবা bKash অ্যাপে যান।</li>
+        <li><span class="highlight-yellow">"Send Money"</span> -এ ক্লিক করুন।</li>
+        <li>
+          প্রাপক নম্বর হিসেবে এই নম্বরটি লিখুন: <span class="highlight-yellow">01708078333</span><br>
+          <button class="copy-btn bkash-copy-btn" onclick="copyNumber('01708078333')">
+            <span>&#128203;</span> Copy
+          </button>
+        </li>
+        <li>টাকার পরিমাণঃ <span class="highlight-yellow amount-display-simple">200</span></li>
+        <li>নিশ্চিত করতে এখন আপনার bKash মোবাইল মেনু পিন লিখুন।</li>
+        <li>সবকিছু ঠিক থাকলে, আপনি bKash থেকে একটি নিশ্চিতকরণ বার্তা পাবেন।</li>
+        <li>এখন উপরের বক্সে আপনার <span class="highlight-yellow">Transaction ID</span> দিন এবং নিচে <span class="highlight-yellow">VERIFY</span> বাটনে ক্লিক করুন।</li>
+      </ul>
+    </div>
+
+    <button class="verify-btn bkash-verify-btn">VERIFY</button>
+  </div>
+
+
+  <!-- ================= PAGE 3: NAGAD ================= -->
+  <div id="nagad-page" class="container hidden">
+    <div class="amount-box">
+      <span class="back-btn" onclick="showPage('home-page')">&#8592;</span>
+      ৳ <span class="amount-display-simple">200</span>
+    </div>
+
+    <div class="payment-card nagad-bg">
+      <div class="card-title">ট্রানজেকশন আইডি দিন</div>
+      
+      <input type="text" class="input-box" placeholder="ট্রানজেকশন আইডি দিন">
+
+      <ul class="instruction-list">
+        <li>*167# ডায়াল করে আপনার Nagad মোবাইল মেনুতে যান অথবা Nagad অ্যাপে যান।</li>
+        <li><span class="nagad-yellow">"Send Money"</span> -এ ক্লিক করুন।</li>
+        <li>
+          প্রাপক নম্বর হিসেবে এই নম্বরটি লিখুন: <span class="nagad-yellow">01708078333</span><br>
+          <button class="copy-btn nagad-copy-btn" onclick="copyNumber('01708078333')">
+            <span>&#128203;</span> Copy
+          </button>
+        </li>
+        <li>টাকার পরিমাণঃ <span class="nagad-yellow amount-display-simple">200</span></li>
+        <li>নিশ্চিত করতে এখন আপনার Nagad মোবাইল মেনু পিন লিখুন।</li>
+        <li>সবকিছু ঠিক থাকলে, আপনি Nagad থেকে একটি নিশ্চিতকরণ বার্তা পাবেন।</li>
+        <li>এখন উপরের বক্সে আপনার <span class="nagad-yellow">Transaction ID</span> দিন এবং নিচে <span class="nagad-yellow">VERIFY</span> বাটনে ক্লিক করুন।</li>
+      </ul>
+    </div>
+
+    <button class="verify-btn nagad-verify-btn">VERIFY</button>
+  </div>
+
+  <script>
+    // 1. Page Switcher Function
+    function showPage(pageId) {
+      document.getElementById('home-page').classList.add('hidden');
+      document.getElementById('bkash-page').classList.add('hidden');
+      document.getElementById('nagad-page').classList.add('hidden');
+
+      document.getElementById(pageId).classList.remove('hidden');
+    }
+
+    // 2. Dynamic Amount Loader from URL Parameter
+    // Example Usage: index.html?amount=500
+    window.onload = function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const amountParam = urlParams.get('amount');
+
+      if (amountParam) {
+        const numericAmount = parseFloat(amountParam);
+        if (!isNaN(numericAmount)) {
+          // Format with decimals for home button (e.g., 500.00)
+          const formattedWithDecimal = numericAmount.toFixed(2);
+          document.querySelectorAll('.amount-display').forEach(el => {
+            el.innerText = formattedWithDecimal;
+          });
+
+          // Format without decimals for instructions (e.g., 500)
+          document.querySelectorAll('.amount-display-simple').forEach(el => {
+            el.innerText = numericAmount;
+          });
+        }
+      }
+    };
+
+    // 3. Copy Number Functionality
+    function copyNumber(number) {
+      navigator.clipboard.writeText(number);
+      alert("নম্বরটি কপি করা হয়েছে: " + number);
+    }
+  </script>
+
+</body>
+</html>
