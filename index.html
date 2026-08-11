@@ -250,10 +250,10 @@
 
     <div class="payment-methods">
       <div class="payment-card-home" onclick="showPage('bkash-page')">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/7/71/BKash-Logo.png" alt="bKash">
+        <img src="https://images.seeklogo.com/logo-png/38/2/bkash-logo-png_seeklogo-382745.png" alt="bKash">
       </div>
       <div class="payment-card-home" onclick="showPage('nagad-page')">
-        <img src="https://download.logo.wine/logo/Nagad/Nagad-Logo.wine.png" alt="Nagad">
+        <img src="https://images.seeklogo.com/logo-png/38/1/nagad-logo-png_seeklogo-382583.png" alt="Nagad">
       </div>
     </div>
 
@@ -336,22 +336,19 @@
       document.getElementById(pageId).classList.remove('hidden');
     }
 
-    // 2. Dynamic Amount Loader from URL Parameter
-    // Example Usage: index.html?amount=500
+    // 2. Dynamic Amount Loader for UI Text Elements
     window.onload = function() {
       const urlParams = new URLSearchParams(window.location.search);
-      const amountParam = urlParams.get('amount');
+      const amountParam = urlParams.get('amount') || localStorage.getItem('deposit_amount');
 
       if (amountParam) {
         const numericAmount = parseFloat(amountParam);
         if (!isNaN(numericAmount)) {
-          // Format with decimals for home button (e.g., 500.00)
           const formattedWithDecimal = numericAmount.toFixed(2);
           document.querySelectorAll('.amount-display').forEach(el => {
             el.innerText = formattedWithDecimal;
           });
 
-          // Format without decimals for instructions (e.g., 500)
           document.querySelectorAll('.amount-display-simple').forEach(el => {
             el.innerText = numericAmount;
           });
@@ -364,6 +361,46 @@
       navigator.clipboard.writeText(number);
       alert("নম্বরটি কপি করা হয়েছে: " + number);
     }
+  </script>
+
+  <!-- ===== Auto-fill Amount from URL/localStorage ===== -->
+  <script>
+  (function(){
+    /* URL থেকে amount নাও (?amount=500) */
+    const params = new URLSearchParams(window.location.search);
+    let amt = params.get('amount');
+    
+    /* না পেলে localStorage থেকে নাও */
+    if(!amt) amt = localStorage.getItem('deposit_amount');
+    
+    if(amt){
+      /* পেজের যেকোনো amount input খুঁজে বের করো */
+      const inputs = document.querySelectorAll('input[name*="amount" i], input[id*="amount" i], input[type="number"], input[placeholder*="amount" i], input[placeholder*="টাকা" i], input[placeholder*="Amount" i]');
+      
+      let filled = false;
+      inputs.forEach(inp=>{
+        if(!filled && inp.offsetParent !== null){ /* শুধু দৃশ্যমান ইনপুটে */
+          inp.value = amt;
+          /* ইভেন্ট trigger করি যাতে অন্যান্য স্ক্রিপ্ট আপডেট হয় */
+          inp.dispatchEvent(new Event('input', {bubbles:true}));
+          inp.dispatchEvent(new Event('change', {bubbles:true}));
+          filled = true;
+        }
+      });
+      
+      /* localStorage পরিষ্কার করি (একবারই ব্যবহার) */
+      localStorage.removeItem('deposit_amount');
+      
+      if(filled){
+        /* ছোট নোটিফিকেশন দেখাই */
+        const note = document.createElement('div');
+        note.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#10b981;color:#fff;padding:12px 20px;border-radius:10px;z-index:9999;font-family:sans-serif;font-weight:600;box-shadow:0 4px 10px rgba(0,0,0,.2);';
+        note.innerText = '✅ ৳' + amt + ' অটো বসানো হয়েছে';
+        document.body.appendChild(note);
+        setTimeout(()=>note.remove(), 3000);
+      }
+    }
+  })();
   </script>
 
 </body>
